@@ -1,4 +1,5 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next-legacy";
+import { prisma } from "./db";
 
 const f = createUploadthing();
 
@@ -19,11 +20,18 @@ export const ourFileRouter = {
     //   // Whatever is returned here is accessible in onUploadComplete as `metadata`
     //   return { userId: user.id };
     // })
-    .onUploadComplete(({ metadata, file }) => {
+    .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
       console.log("Upload complete ...", metadata);
 
-      console.log("file url", file.url);
+      const pato = await prisma.patosWithoutUser.create({
+        data: {
+          name: file.name,
+          imageUrl: file.url,
+        },
+      });
+
+      console.log(`Pato ${pato.id} saved at`, file.url);
     }),
 } satisfies FileRouter;
 

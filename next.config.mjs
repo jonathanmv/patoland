@@ -21,6 +21,17 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  // https://nextjs.org/docs/messages/next-image-unconfigured-host
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "uploadthing.com",
+        port: "",
+        pathname: "/f/**",
+      },
+    ],
+  },
 };
 
 export default config;
