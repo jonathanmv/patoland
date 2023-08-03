@@ -1,18 +1,12 @@
 import { z } from "zod";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const patosRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
+  findById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
+    return ctx.prisma.patosWithoutUser.findUnique({
+      where: { id: input },
+    });
+  }),
 
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.prisma.patosWithoutUser.findMany();
@@ -28,8 +22,4 @@ export const patosRouter = createTRPCRouter({
         },
       });
     }),
-
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
-  }),
 });
