@@ -6,10 +6,10 @@ export default function PatoComponent({
   pato: { imageUrl: string; id: string };
 }) {
   return (
-    <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-zinc-600 bg-zinc-100 p-6">
-      <div className="mb-6 rounded-xl border-4 border-zinc-600">
+    <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
+      <div className="mb-6 rounded-xl border-4 border-yellow-500">
         <Image
-          className="mx-auto w-full rounded-lg"
+          className="mx-auto w-full rounded-lg bg-zinc-200"
           src={pato.imageUrl}
           alt="Un pato"
           width="360"

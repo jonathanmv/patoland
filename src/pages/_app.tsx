@@ -14,8 +14,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <>
       <Head>
         <title>Patoland</title>
-        <meta name="description" content="Descubre un mundo de patos" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <SessionProvider session={session}>
         <Component {...pageProps} />

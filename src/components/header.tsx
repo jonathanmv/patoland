@@ -3,11 +3,11 @@ import { UploadButton } from "~/utils/uploadthing";
 
 export default function TopBar() {
   return (
-    <header className="sticky top-0 z-50 w-full bg-gradient-to-r from-sky-500 to-cyan-400 p-4">
+    <header className="sticky top-0 z-50 w-full px-4 py-2">
       <div className="flex flex-row justify-between">
         <Link href="/">
-          <h1 className=" flex-grow text-5xl font-extrabold tracking-tight text-slate-800 sm:text-[3rem]">
-            Patoland
+          <h1 className="font-patoland text-[4rem] font-extrabold text-slate-700">
+            patoland
           </h1>
         </Link>
         <UploadButton

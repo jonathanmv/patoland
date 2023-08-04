@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import TopBar from "~/components/header";
 import PatoComponent from "~/components/pato";
 import { api } from "~/utils/api";
 
@@ -14,10 +13,5 @@ export default function Pato() {
     return null;
   }
 
-  return (
-    <main>
-      <TopBar />
-      <PatoComponent pato={pato} />
-    </main>
-  );
+  return <PatoComponent pato={pato} />;
 }
