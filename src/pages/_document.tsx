@@ -1,5 +1,4 @@
 import { Head, Html, Main, NextScript } from "next/document";
-import TopBar from "~/components/header";
 
 export default function Document() {
   return (
@@ -20,7 +19,6 @@ export default function Document() {
       </Head>
       <body>
         <main>
-          <TopBar />
           <Main />
           <NextScript />
         </main>
