@@ -9,7 +9,9 @@ export const patosRouter = createTRPCRouter({
   }),
 
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.patosWithoutUser.findMany();
+    return ctx.prisma.patosWithoutUser.findMany({
+      orderBy: { createdAt: "desc" },
+    });
   }),
 
   add: publicProcedure
