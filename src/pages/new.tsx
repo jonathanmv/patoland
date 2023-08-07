@@ -67,8 +67,9 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           videoConstraints={{
-            width: 720,
-            height: 1280,
+            width: { min: 480 },
+            height: { min: 720 },
+            aspectRatio: 0.6666666667,
             facingMode: "environment",
           }}
           className="rounded-lg bg-zinc-200"
