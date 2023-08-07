@@ -68,8 +68,8 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           videoConstraints={{
-            width: { min: 480 },
-            height: { min: 720 },
+            width: 480,
+            height: 720,
             aspectRatio: 0.6666666667,
             facingMode: "environment",
           }}
