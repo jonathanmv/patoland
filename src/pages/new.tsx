@@ -25,11 +25,12 @@ export default function NewPato() {
 
   const onConfirm = useCallback(async () => {
     if (!imageSrc) return;
+    if (isUploading) return;
 
     const blob = await fetch(imageSrc).then((res) => res.blob());
     const file = new File([blob], "pato.jpeg", { type: "image/jpeg" });
     await startUpload([file]);
-  }, [imageSrc, startUpload]);
+  }, [imageSrc, isUploading, startUpload]);
 
   return (
     <div className="flex flex-col items-center justify-center gap-12">
@@ -157,10 +158,7 @@ function PatoImage({ imageSrc, onReset, onConfirm, disabled }: PatoImageProps) {
 
   const Uploading = () => (
     <>
-      <button
-        className="rounded-xl border-0 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300"
-        onClick={onConfirm}
-      >
+      <button className="rounded-xl border-0 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
