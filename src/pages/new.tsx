@@ -1,8 +1,9 @@
 /* eslint-disable @next/next/no-img-element */
+import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
 import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
-import { useUploadThing } from "~/utils/uploadthing";
+import { UploadButton, useUploadThing } from "~/utils/uploadthing";
 
 export default function NewPato() {
   const router = useRouter();
@@ -43,6 +44,17 @@ export default function NewPato() {
           disabled={isUploading}
         />
       ) : null}
+      <UploadButton
+        endpoint="imageUploader"
+        onClientUploadComplete={() => {
+          alert("Upload complete!");
+          void router.push(`/`);
+        }}
+        onUploadError={(err: unknown) => {
+          console.log(err);
+          alert("Upload failed!");
+        }}
+      />
     </div>
   );
 }
