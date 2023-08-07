@@ -24,6 +24,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
+    "react-webcam": "^7.1.1",
     "superjson": "1.12.2",
     "uploadthing": "^5.2.1",
     "zod": "^3.21.4"
