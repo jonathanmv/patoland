@@ -69,7 +69,7 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           videoConstraints={{
             width: 720,
             height: 1280,
-            aspectRatio: 0.5625,
+            aspectRatio: 0.6667,
             facingMode: "environment",
           }}
           className="rounded-lg bg-zinc-200"
