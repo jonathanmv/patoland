@@ -69,7 +69,6 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           videoConstraints={{
             width: 720,
             height: 1280,
-            aspectRatio: 0.6667,
             facingMode: "environment",
           }}
           className="rounded-lg bg-zinc-200"
@@ -158,7 +157,7 @@ function PatoImage({ imageSrc, onReset, onConfirm, disabled }: PatoImageProps) {
   const Uploading = () => (
     <>
       <button
-        className="rounded-xl border-0 border-b-4 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300"
+        className="rounded-xl border-0 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300"
         onClick={onConfirm}
       >
         <svg
