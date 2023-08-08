@@ -1,13 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { UploadButton, useUploadThing } from "~/utils/uploadthing";
 
 export default function NewPato() {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [constraints, setConstraints] =
+    useState<MediaTrackSupportedConstraints | null>();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: (file) => {
@@ -24,6 +26,10 @@ export default function NewPato() {
     },
   });
 
+  useEffect(() => {
+    setConstraints(navigator.mediaDevices.getSupportedConstraints());
+  }, []);
+
   const onConfirm = useCallback(async () => {
     if (!imageSrc) return;
     if (isUploading) return;
@@ -35,7 +41,7 @@ export default function NewPato() {
 
   return (
     <div className="flex flex-col items-center justify-center gap-12">
-      {!imageSrc ? <WebcamComponent onCapture={setImageSrc} /> : null}
+      {imageSrc ? null : <WebcamComponent onCapture={setImageSrc} />}
       {imageSrc ? (
         <PatoImage
           imageSrc={imageSrc}
@@ -44,17 +50,27 @@ export default function NewPato() {
           disabled={isUploading}
         />
       ) : null}
-      <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={() => {
-          alert("Upload complete!");
-          void router.push(`/`);
-        }}
-        onUploadError={(err: unknown) => {
-          console.log(err);
-          alert("Upload failed!");
-        }}
-      />
+      {imageSrc ? null : (
+        <UploadButton
+          endpoint="imageUploader"
+          onClientUploadComplete={() => {
+            alert("Upload complete!");
+            void router.push(`/`);
+          }}
+          onUploadError={(err: unknown) => {
+            console.log(err);
+            alert("Upload failed!");
+          }}
+        />
+      )}
+      {constraints ? (
+        <div className="text-center">
+          <h2 className="text-2xl font-bold">Supported Constraints</h2>
+          <pre className="text-left">
+            {JSON.stringify(constraints, null, 2)}
+          </pre>
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -79,16 +95,17 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           imageSmoothing
           ref={webcamRef}
           screenshotFormat="image/jpeg"
+          audio={false}
           videoConstraints={{
-            width: { min: 480 },
-            height: { min: 720 },
+            width: { exact: 480 },
+            height: { exact: 720 },
             aspectRatio: 0.6666666667,
             facingMode: "environment",
           }}
           width={480}
+          minScreenshotWidth={480}
           height={720}
           minScreenshotHeight={720}
-          minScreenshotWidth={480}
           className="max-[720px] h-96 rounded-lg bg-zinc-200"
         />
       </div>
