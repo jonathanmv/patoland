@@ -1,15 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { UploadButton, useUploadThing } from "~/utils/uploadthing";
 
 export default function NewPato() {
   const router = useRouter();
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [constraints, setConstraints] =
-    useState<MediaTrackSupportedConstraints | null>();
 
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: (file) => {
@@ -25,10 +23,6 @@ export default function NewPato() {
       setImageSrc(null);
     },
   });
-
-  useEffect(() => {
-    setConstraints(navigator.mediaDevices.getSupportedConstraints());
-  }, []);
 
   const onConfirm = useCallback(async () => {
     if (!imageSrc) return;
@@ -63,14 +57,6 @@ export default function NewPato() {
           }}
         />
       )}
-      {constraints ? (
-        <div className="text-center">
-          <h2 className="text-2xl font-bold">Supported Constraints</h2>
-          <pre className="text-left">
-            {JSON.stringify(constraints, null, 2)}
-          </pre>
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -97,15 +83,10 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           screenshotFormat="image/jpeg"
           audio={false}
           videoConstraints={{
-            width: { exact: 480 },
-            height: { exact: 720 },
             aspectRatio: 0.6666666667,
             facingMode: "environment",
           }}
-          width={480}
-          minScreenshotWidth={480}
           height={720}
-          minScreenshotHeight={720}
           className="max-[720px] h-96 rounded-lg bg-zinc-200"
         />
       </div>
