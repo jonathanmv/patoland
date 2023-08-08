@@ -85,7 +85,9 @@ function WebcamComponent({ onCapture }: WebcamProps) {
             aspectRatio: 0.6666666667,
             facingMode: "environment",
           }}
-          className="rounded-lg bg-zinc-200"
+          minScreenshotHeight={720}
+          minScreenshotWidth={480}
+          className="max-[720px] h-96 rounded-lg bg-zinc-200"
         />
       </div>
       <div className="flex flex-row justify-center gap-4">
