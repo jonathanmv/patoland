@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { UploadButton, useUploadThing } from "~/utils/uploadthing";
 
@@ -77,7 +77,8 @@ function WebcamComponent({ onCapture }: WebcamProps) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="mb-6 rounded-xl border-4 border-yellow-500">
-        <Webcam
+        <Camera className="max-[720px] h-96 rounded-lg bg-zinc-200" />
+        {/* <Webcam
           imageSmoothing
           ref={webcamRef}
           screenshotFormat="image/jpeg"
@@ -88,7 +89,7 @@ function WebcamComponent({ onCapture }: WebcamProps) {
           }}
           height={720}
           className="max-[720px] h-96 rounded-lg bg-zinc-200"
-        />
+        /> */}
       </div>
       <div className="flex flex-row justify-center gap-4">
         <button
@@ -201,5 +202,92 @@ function PatoImage({ imageSrc, onReset, onConfirm, disabled }: PatoImageProps) {
         {disabled ? <Uploading /> : null}
       </div>
     </figure>
+  );
+}
+
+const constraints: MediaStreamConstraints = {
+  audio: true,
+  video: {
+    facingMode: "environment",
+    height: { min: 720, ideal: 720, max: 720 },
+    width: { min: 480, ideal: 480, max: 480 },
+  },
+};
+
+async function getMedia(constraints: MediaStreamConstraints) {
+  let stream = null;
+
+  try {
+    stream = await navigator.mediaDevices.getUserMedia(constraints);
+    return stream;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function useCamera() {
+  const [stream, setStream] = useState<MediaStream | null>(null);
+
+  useEffect(() => {
+    void getMedia(constraints).then((stream) => {
+      if (stream) {
+        console.log("Got Media");
+        setStream(stream);
+      }
+    });
+  }, []);
+
+  return stream;
+}
+
+function useCameraImage(
+  stream: MediaStream | null,
+  canvas: HTMLCanvasElement | null
+) {
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (stream && canvas) {
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      void video.play();
+
+      const ctx = canvas.getContext("2d")!;
+
+      const interval = setInterval(() => {
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // setImageSrc(canvas.toDataURL("image/jpeg"));
+      }, 1000 / 25);
+
+      return () => {
+        clearInterval(interval);
+        stream.active && stream.getTracks().forEach((track) => track.stop());
+      };
+    }
+  }, [stream, canvas]);
+
+  return imageSrc;
+}
+
+type CameraProps = {
+  className?: string;
+};
+
+function Camera(props: CameraProps) {
+  const stream = useCamera();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const cameraImage = useCameraImage(stream, canvasRef.current);
+  console.log(cameraImage);
+
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <canvas
+        ref={canvasRef}
+        id="canvas"
+        width={480}
+        height={720}
+        className={props.className}
+      ></canvas>
+    </div>
   );
 }
