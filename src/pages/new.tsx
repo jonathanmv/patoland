@@ -76,23 +76,25 @@ function WebcamComponent({ onCapture }: WebcamProps) {
 
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
-      <div className="mb-6 rounded-xl border-4 border-yellow-500">
+      <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
         {/* <p>another camera</p>
         <AnotherCamera />
         <p>camera</p> */}
-        <Camera className="max-[720px] h-96 rounded-lg bg-zinc-200" />
-        {/* <Webcam
+        {/* <Camera className="max-[720px] h-96 rounded-lg bg-zinc-200" /> */}
+        <Webcam
           imageSmoothing
           ref={webcamRef}
           screenshotFormat="image/jpeg"
           audio={false}
           videoConstraints={{
-            aspectRatio: 0.6666666667,
+            height: { min: 720, ideal: 720, max: 720 },
+            width: { min: 480, ideal: 480, max: 480 },
             facingMode: "environment",
           }}
+          width={480}
           height={720}
-          className="max-[720px] h-96 rounded-lg bg-zinc-200"
-        /> */}
+          className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
+        />
       </div>
       <div className="flex flex-row justify-center gap-4">
         <button
@@ -298,11 +300,5 @@ function Camera(props: CameraProps) {
         className={props.className}
       />
     </div>
-  );
-}
-
-function AnotherCamera() {
-  return (
-    <input type="file" id="videoFile" capture="environment" accept="video/*" />
   );
 }
