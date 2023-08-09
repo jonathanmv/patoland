@@ -206,7 +206,7 @@ function PatoImage({ imageSrc, onReset, onConfirm, disabled }: PatoImageProps) {
 }
 
 const constraints: MediaStreamConstraints = {
-  audio: true,
+  audio: false,
   video: {
     facingMode: "environment",
     height: { min: 720, ideal: 720, max: 720 },
@@ -284,6 +284,8 @@ function Camera(props: CameraProps) {
       <video
         ref={videoRef}
         autoPlay
+        playsInline
+        muted
         width={480}
         height={720}
         className={props.className}
