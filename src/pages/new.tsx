@@ -77,6 +77,9 @@ function WebcamComponent({ onCapture }: WebcamProps) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="mb-6 rounded-xl border-4 border-yellow-500">
+        {/* <p>another camera</p>
+        <AnotherCamera />
+        <p>camera</p> */}
         <Camera className="max-[720px] h-96 rounded-lg bg-zinc-200" />
         {/* <Webcam
           imageSmoothing
@@ -249,6 +252,9 @@ function useCameraImage(
   useEffect(() => {
     if (stream && video) {
       video.srcObject = stream;
+      video.width = 480;
+      video.height = 720;
+      video.setAttribute("style", "object-fit: cover;");
       void video.play();
 
       // const canvas = document.createElement("canvas");
@@ -281,6 +287,7 @@ function Camera(props: CameraProps) {
 
   return (
     <div className="flex flex-col items-center justify-center">
+      {stream ? null : <p>No Camera</p>}
       <video
         ref={videoRef}
         autoPlay
@@ -291,5 +298,11 @@ function Camera(props: CameraProps) {
         className={props.className}
       />
     </div>
+  );
+}
+
+function AnotherCamera() {
+  return (
+    <input type="file" id="videoFile" capture="environment" accept="video/*" />
   );
 }
