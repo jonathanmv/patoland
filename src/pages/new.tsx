@@ -249,7 +249,7 @@ function useCameraImage(
   useEffect(() => {
     if (stream && video) {
       video.srcObject = stream;
-      // void video.play();
+      void video.play();
 
       // const canvas = document.createElement("canvas");
       // const ctx = canvas.getContext("2d")!;
