@@ -7,13 +7,13 @@ export default function PatoComponent({
 }) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
-      <div className="mb-6 rounded-xl border-4 border-yellow-500">
+      <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
         <Image
-          className="mx-auto w-full rounded-lg bg-zinc-200"
+          width={480}
+          height={720}
+          className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
           src={pato.imageUrl}
-          alt="Un pato"
-          width="360"
-          height="360"
+          alt="pato"
         />
       </div>
       <div className="flex flex-row justify-center gap-4">

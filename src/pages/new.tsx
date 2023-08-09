@@ -78,11 +78,10 @@ function WebcamComponent({ onCapture }: WebcamProps) {
     if (video) {
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
-      canvas.width = 480;
-      canvas.height = 720;
-      context?.drawImage(video, 0, 0, 480, 720);
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
       imageSrc = canvas.toDataURL("image/jpeg");
-      alert("from canvas");
     }
     onCapture(imageSrc);
   }, [onCapture]);
