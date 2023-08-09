@@ -67,7 +67,10 @@ type WebcamProps = {
 function WebcamComponent({ onCapture }: WebcamProps) {
   const webcamRef = useRef<Webcam>(null);
   const capture = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot();
+    const imageSrc = webcamRef.current?.getScreenshot({
+      width: 480,
+      height: 720,
+    });
     if (!imageSrc) {
       return alert("No image");
     }
