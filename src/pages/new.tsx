@@ -71,15 +71,6 @@ function WebcamComponent({ onCapture }: WebcamProps) {
     if (!imageSrc) {
       return alert("No image");
     }
-    // const video = document.querySelector("video");
-    // if (video) {
-    //   const canvas = document.createElement("canvas");
-    //   const context = canvas.getContext("2d");
-    //   canvas.width = video.videoWidth;
-    //   canvas.height = video.videoHeight;
-    //   context?.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
-    //   imageSrc = canvas.toDataURL("image/jpeg");
-    // }
     onCapture(imageSrc);
   }, [onCapture]);
 

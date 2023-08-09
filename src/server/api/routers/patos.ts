@@ -1,6 +1,8 @@
+import { customAlphabet } from "nanoid";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
+const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 6);
 export const patosRouter = createTRPCRouter({
   findById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
     return ctx.prisma.patosWithoutUser.findUnique({
@@ -19,6 +21,7 @@ export const patosRouter = createTRPCRouter({
     .mutation(({ ctx, input }) => {
       return ctx.prisma.patosWithoutUser.create({
         data: {
+          id: nanoid(),
           name: input.name,
           imageUrl: input.imageUrl,
         },
