@@ -90,6 +90,7 @@ function WebcamComponent({ onCapture }: WebcamProps) {
             width: { min: 480, ideal: 480, max: 480 },
             facingMode: "environment",
           }}
+          forceScreenshotSourceSize
           width={480}
           height={720}
           className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
