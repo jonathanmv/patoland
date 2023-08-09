@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import { UploadButton, useUploadThing } from "~/utils/uploadthing";
 
@@ -77,10 +77,6 @@ function WebcamComponent({ onCapture }: WebcamProps) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
-        {/* <p>another camera</p>
-        <AnotherCamera />
-        <p>camera</p> */}
-        {/* <Camera className="max-[720px] h-96 rounded-lg bg-zinc-200" /> */}
         <Webcam
           imageSmoothing
           ref={webcamRef}
@@ -199,106 +195,19 @@ function PatoImage({ imageSrc, onReset, onConfirm, disabled }: PatoImageProps) {
 
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
-      <div className="mb-6 rounded-xl border-4 border-yellow-500">
-        <img src={imageSrc} alt="pato" className="rounded-lg bg-zinc-200" />
+      <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
+        <img
+          src={imageSrc}
+          alt="pato"
+          width={480}
+          height={720}
+          className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
+        />
       </div>
       <div className="flex flex-row justify-center gap-4">
         {!disabled ? <Choose /> : null}
         {disabled ? <Uploading /> : null}
       </div>
     </figure>
-  );
-}
-
-const constraints: MediaStreamConstraints = {
-  audio: false,
-  video: {
-    facingMode: "environment",
-    height: { min: 720, ideal: 720, max: 720 },
-    width: { min: 480, ideal: 480, max: 480 },
-  },
-};
-
-async function getMedia(constraints: MediaStreamConstraints) {
-  let stream = null;
-
-  try {
-    stream = await navigator.mediaDevices.getUserMedia(constraints);
-    return stream;
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function useCamera() {
-  const [stream, setStream] = useState<MediaStream | null>(null);
-
-  useEffect(() => {
-    void getMedia(constraints).then((stream) => {
-      if (stream) {
-        console.log("Got Media");
-        setStream(stream);
-      }
-    });
-  }, []);
-
-  return stream;
-}
-
-function useCameraImage(
-  stream: MediaStream | null,
-  video: HTMLVideoElement | null
-) {
-  const [imageSrc, setImageSrc] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (stream && video) {
-      video.srcObject = stream;
-      video.width = 480;
-      video.height = 720;
-      video.setAttribute("style", "object-fit: cover;");
-      void video.play();
-
-      // const canvas = document.createElement("canvas");
-      // const ctx = canvas.getContext("2d")!;
-
-      // const interval = setInterval(() => {
-      //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-      //   // setImageSrc(canvas.toDataURL("image/jpeg"));
-      // }, 1000 / 30);
-
-      return () => {
-        // clearInterval(interval);
-        stream.active && stream.getTracks().forEach((track) => track.stop());
-      };
-    }
-  }, [stream, video]);
-
-  return imageSrc;
-}
-
-type CameraProps = {
-  className?: string;
-};
-
-function Camera(props: CameraProps) {
-  const stream = useCamera();
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const cameraImage = useCameraImage(stream, videoRef.current);
-  console.log(cameraImage);
-
-  return (
-    <div className="flex flex-col items-center justify-center">
-      {stream ? null : <p>No Camera</p>}
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        width={480}
-        height={720}
-        className={props.className}
-      />
-    </div>
   );
 }
