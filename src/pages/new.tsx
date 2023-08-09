@@ -67,12 +67,23 @@ type WebcamProps = {
 function WebcamComponent({ onCapture }: WebcamProps) {
   const webcamRef = useRef<Webcam>(null);
   const capture = useCallback(() => {
-    const imageSrc = webcamRef.current?.getScreenshot({
+    let imageSrc = webcamRef.current?.getScreenshot({
       width: 480,
       height: 720,
     });
     if (!imageSrc) {
       return alert("No image");
+    }
+    const video = document.querySelector("video");
+    if (video) {
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const [w, h] = [video.videoWidth, video.videoHeight];
+      canvas.width = w;
+      canvas.height = h;
+      context?.drawImage(video, 0, 0, w, h);
+      imageSrc = canvas.toDataURL("image/jpeg");
+      console.log("from canvas");
     }
     onCapture(imageSrc);
   }, [onCapture]);
