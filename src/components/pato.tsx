@@ -1,10 +1,11 @@
 import Image from "next/image";
-
-export default function PatoComponent({
-  pato,
-}: {
-  pato: { imageUrl: string; id: string };
-}) {
+type Pato = { imageUrl: string; id: string };
+type Props = {
+  pato: Pato;
+  onLove: (pato: Pato) => void;
+  onShare: (pato: Pato) => void;
+};
+export default function PatoComponent({ pato, onLove, onShare }: Props) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
@@ -17,7 +18,10 @@ export default function PatoComponent({
         />
       </div>
       <div className="flex flex-row justify-center gap-4">
-        <button className="w-full rounded-xl border-b-4 border-red-600 bg-red-500 px-8  py-3 text-center font-bold text-white hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0">
+        <button
+          onClick={() => onLove(pato)}
+          className="w-full rounded-xl border-b-4 border-red-600 bg-red-500 px-8  py-3 text-center font-bold text-white hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -34,7 +38,10 @@ export default function PatoComponent({
           </svg>
         </button>
 
-        <button className="w-full rounded-xl border-b-4 border-green-600 bg-green-500  px-8 py-3 font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0">
+        <button
+          onClick={() => onShare(pato)}
+          className="w-full rounded-xl border-b-4 border-green-600 bg-green-500  px-8 py-3 font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
