@@ -242,29 +242,29 @@ function useCamera() {
 
 function useCameraImage(
   stream: MediaStream | null,
-  canvas: HTMLCanvasElement | null
+  video: HTMLVideoElement | null
 ) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    if (stream && canvas) {
-      const video = document.createElement("video");
+    if (stream && video) {
       video.srcObject = stream;
-      void video.play();
+      // void video.play();
 
-      const ctx = canvas.getContext("2d")!;
+      // const canvas = document.createElement("canvas");
+      // const ctx = canvas.getContext("2d")!;
 
-      const interval = setInterval(() => {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        // setImageSrc(canvas.toDataURL("image/jpeg"));
-      }, 1000 / 25);
+      // const interval = setInterval(() => {
+      //   ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      //   // setImageSrc(canvas.toDataURL("image/jpeg"));
+      // }, 1000 / 30);
 
       return () => {
-        clearInterval(interval);
+        // clearInterval(interval);
         stream.active && stream.getTracks().forEach((track) => track.stop());
       };
     }
-  }, [stream, canvas]);
+  }, [stream, video]);
 
   return imageSrc;
 }
@@ -275,19 +275,19 @@ type CameraProps = {
 
 function Camera(props: CameraProps) {
   const stream = useCamera();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const cameraImage = useCameraImage(stream, canvasRef.current);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const cameraImage = useCameraImage(stream, videoRef.current);
   console.log(cameraImage);
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <canvas
-        ref={canvasRef}
-        id="canvas"
+      <video
+        ref={videoRef}
+        autoPlay
         width={480}
         height={720}
         className={props.className}
-      ></canvas>
+      />
     </div>
   );
 }
