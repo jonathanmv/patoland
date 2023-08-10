@@ -73,4 +73,5 @@ model PatosWithoutUser {
     updatedAt DateTime @updatedAt
     name      String
     imageUrl  String
+    love      Int      @default(0)
 }

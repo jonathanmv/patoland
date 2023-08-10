@@ -27,7 +27,8 @@ export default function Home() {
         <PatoComponent
           key={pato.id}
           pato={pato}
-          onLove={(pato) => void router.push(`/pato/` + pato.id)}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onLove={() => {}}
           onShare={onShare}
         />
         // </Link>

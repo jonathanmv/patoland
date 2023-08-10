@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { useRouter } from "next/router";
 import PatoComponent from "~/components/pato";
 import { api } from "~/utils/api";
@@ -13,5 +14,5 @@ export default function Pato() {
     return null;
   }
 
-  return <PatoComponent pato={pato} />;
+  return <PatoComponent pato={pato} onLove={() => {}} onShare={() => {}} />;
 }

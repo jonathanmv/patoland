@@ -20,7 +20,7 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
       <div className="flex flex-row justify-center gap-4">
         <button
           onClick={() => onLove(pato)}
-          className="w-full rounded-xl border-b-4 border-red-600 bg-red-500 px-8  py-3 text-center font-bold text-white hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0"
+          className="duration-50 w-full transform  rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:-translate-y-4 active:border-0"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

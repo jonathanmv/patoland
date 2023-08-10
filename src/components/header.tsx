@@ -9,8 +9,9 @@ export default function TopBar() {
             patoland
           </h1>
         </Link>
-        <Link href="/new">
-          <button className="rounded-xl border-b-4 border-violet-600 bg-violet-500 px-8  py-3 text-center font-bold text-white hover:border-violet-500 hover:bg-violet-400 focus:border-violet-500 focus:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-300 active:border-0">
+        <Link href="/new" className="relative">
+          <span className="absolute h-full w-full rounded-xl border-b-4 border-violet-600 bg-violet-500 px-8 py-3  text-center font-bold text-white opacity-75 hover:border-violet-500 hover:bg-violet-400 focus:border-violet-500 focus:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-300 active:border-0" />
+          <button className="animate-pulse rounded-xl border-b-4 border-violet-600 bg-violet-500 px-8 py-3  text-center font-bold text-white hover:border-violet-500 hover:bg-violet-400 focus:border-violet-500 focus:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-300 active:border-0">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

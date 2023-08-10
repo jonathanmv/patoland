@@ -27,4 +27,15 @@ export const patosRouter = createTRPCRouter({
         },
       });
     }),
+
+  addLove: publicProcedure
+    .input(z.object({ id: z.string(), love: z.number() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.patosWithoutUser.update({
+        where: { id: input.id },
+        data: {
+          love: { increment: input.love },
+        },
+      });
+    }),
 });
