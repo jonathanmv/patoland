@@ -1,11 +1,54 @@
 import Image from "next/image";
-type Pato = { imageUrl: string; id: string };
+import { useCallback, useEffect, useRef, useState } from "react";
+import { api } from "~/utils/api";
+type Pato = { imageUrl: string; id: string; love: number };
 type Props = {
   pato: Pato;
   onLove: (pato: Pato) => void;
   onShare: (pato: Pato) => void;
 };
+
+const useTrottledCallback = (callback: () => void, delay: number) => {
+  const timeoutRef = useRef<number | null>(null);
+
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  return useCallback(() => {
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = window.setTimeout(() => {
+      timeoutRef.current = null;
+      callbackRef.current();
+    }, delay);
+  }, [delay]);
+};
+
 export default function PatoComponent({ pato, onLove, onShare }: Props) {
+  const [loveBuffer, setLoveBuffer] = useState(0);
+  const addLove = api.patos.addLove.useMutation({
+    onSuccess: () => {
+      setLoveBuffer(0);
+      onLove(pato);
+    },
+  });
+
+  const pushLove = () => {
+    addLove.mutate({ id: pato.id, love: loveBuffer });
+  };
+
+  const trottledOnLove = useTrottledCallback(pushLove, 1000);
+
+  const handleLove = () => {
+    setLoveBuffer((prev) => prev + 1);
+    trottledOnLove();
+  };
+
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
@@ -19,7 +62,7 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
       </div>
       <div className="flex flex-row justify-center gap-4">
         <button
-          onClick={() => onLove(pato)}
+          onClick={handleLove}
           className="duration-50 w-full transform  rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:-translate-y-4 active:border-0"
         >
           <svg
