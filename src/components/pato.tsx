@@ -1,11 +1,12 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 type Pato = { imageUrl: string; id: string; love: number };
 type Props = {
   pato: Pato;
-  onLove: (pato: Pato) => void;
-  onShare: (pato: Pato) => void;
+  onLove?: (pato: Pato) => void;
+  onShare?: (pato: Pato) => void;
 };
 
 const Heart = ({ number, animated }: { animated?: boolean; number: number }) =>
@@ -62,7 +63,7 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
     onSuccess: () => {
       setAddedLove((prev) => prev + loveBuffer);
       setLoveBuffer(0);
-      onLove({ ...pato, love: currentLove });
+      onLove && onLove({ ...pato, love: currentLove });
     },
   });
 
@@ -75,6 +76,21 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
   const handleLove = () => {
     setLoveBuffer((prev) => prev + 1);
     trottledOnLove();
+  };
+
+  const router = useRouter();
+  const handleShare = () => {
+    if (!navigator.share) {
+      console.log("Not supported");
+      void router.push("/pato/" + pato.id);
+      return;
+    }
+
+    void navigator.share({
+      title: "Pato",
+      text: "Descubre un mundo de patos",
+      url: `${window.location.origin}/pato/${pato.id}`,
+    });
   };
 
   return (
@@ -115,7 +131,7 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
         </button>
 
         <button
-          onClick={() => onShare(pato)}
+          onClick={handleShare}
           className="w-full rounded-xl border-b-4 border-green-600 bg-green-500  px-8 py-3 font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
         >
           <svg
