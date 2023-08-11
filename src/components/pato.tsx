@@ -8,6 +8,31 @@ type Props = {
   onShare: (pato: Pato) => void;
 };
 
+const Heart = ({ number, animated }: { animated?: boolean; number: number }) =>
+  animated ? (
+    <div
+      className={
+        "absolute flex h-full w-full items-center justify-center bg-red-200 opacity-75"
+      }
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="red"
+        viewBox="0 0 24 24"
+        strokeWidth="2.5"
+        stroke="red"
+        className={"duration-50 mx-auto h-1/2 w-1/2 animate-ping"}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+        />
+      </svg>
+      <span className="absolute text-4xl font-bold text-white">{number}</span>
+    </div>
+  ) : null;
+
 const useTrottledCallback = (callback: () => void, delay: number) => {
   const timeoutRef = useRef<number | null>(null);
 
@@ -30,11 +55,14 @@ const useTrottledCallback = (callback: () => void, delay: number) => {
 };
 
 export default function PatoComponent({ pato, onLove, onShare }: Props) {
+  const [addedLove, setAddedLove] = useState(0);
   const [loveBuffer, setLoveBuffer] = useState(0);
+  const currentLove = loveBuffer + pato.love + addedLove;
   const addLove = api.patos.addLove.useMutation({
     onSuccess: () => {
+      setAddedLove((prev) => prev + loveBuffer);
       setLoveBuffer(0);
-      onLove(pato);
+      onLove({ ...pato, love: currentLove });
     },
   });
 
@@ -51,7 +79,10 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
 
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
-      <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
+      <div
+        onClick={handleLove}
+        className="relative mb-6 aspect-[2/3] select-none rounded-xl border-4 border-yellow-500"
+      >
         <Image
           width={480}
           height={720}
@@ -59,11 +90,12 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
           src={pato.imageUrl}
           alt="pato"
         />
+        <Heart number={currentLove} animated={loveBuffer > 0} />
       </div>
       <div className="flex flex-row justify-center gap-4">
         <button
           onClick={handleLove}
-          className="duration-50 w-full transform  rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:-translate-y-4 active:border-0"
+          className="flex w-full transform flex-row  rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0 active:border-t-4"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -79,6 +111,7 @@ export default function PatoComponent({ pato, onLove, onShare }: Props) {
               d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
             />
           </svg>
+          {currentLove}
         </button>
 
         <button
