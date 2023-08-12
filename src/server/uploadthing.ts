@@ -1,5 +1,9 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next-legacy";
 import { prisma } from "./db";
+import {
+  removeImageBackground,
+  type ReplicateCreatePredictionResponse,
+} from "./replicate";
 
 const f = createUploadthing();
 
@@ -31,8 +35,27 @@ export const ourFileRouter = {
         },
       });
 
+      const prediction = await removeImageBackground(file.url);
+      await savePrediction(pato.id, prediction);
+
       console.log(`Pato ${pato.id} saved at`, file.url);
     }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
+
+function savePrediction(
+  patoId: string,
+  prediction: ReplicateCreatePredictionResponse
+) {
+  return prisma.patoPrediction.create({
+    data: {
+      id: prediction.id,
+      version: prediction.version,
+      status: prediction.status,
+      created_at: prediction.created_at,
+      error: prediction.error,
+      patoId,
+    },
+  });
+}

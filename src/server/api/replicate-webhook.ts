@@ -2,13 +2,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { utapi } from "uploadthing/server";
 import { z } from "zod";
 import { prisma } from "~/server/db";
+import {
+  isValidReplicateGetPredictionResponse,
+  type ReplicateGetPredictionResponse,
+} from "~/server/replicate";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   const prediction: unknown = req.body;
-  if (!isValidReplicateGetPredictionRequest(prediction)) {
+  if (!isValidReplicateGetPredictionResponse(prediction)) {
     console.error("Invalid prediction request", prediction);
     res.status(400).end();
     return;
@@ -19,45 +23,12 @@ export default async function handler(
   res.status(200).end();
 }
 
-const replicateGetPredictionRequestSchema = z.object({
-  id: z.string(),
-  version: z.string(),
-  urls: z.object({
-    get: z.string(),
-    cancel: z.string(),
-  }),
-  created_at: z.string(),
-  started_at: z.string(),
-  completed_at: z.string(),
-  source: z.string(),
-  status: z.string(),
-  input: z.object({
-    prompt: z.string(),
-  }),
-  output: z.string().or(z.array(z.string())),
-  error: z.string().optional(),
-  logs: z.string(),
-  metrics: z.object({
-    predict_time: z.number(),
-  }),
-});
-
-type ReplicateGetPredictionRequest = z.infer<
-  typeof replicateGetPredictionRequestSchema
->;
-
-function isValidReplicateGetPredictionRequest(
-  input: unknown
-): input is ReplicateGetPredictionRequest {
-  return replicateGetPredictionRequestSchema.safeParse(input).success;
-}
-
 type PredictionHandler = {
   version: string;
-  handle: (prediction: ReplicateGetPredictionRequest) => Promise<void>;
+  handle: (prediction: ReplicateGetPredictionResponse) => Promise<void>;
 };
 
-async function handlePrediction(prediction: ReplicateGetPredictionRequest) {
+async function handlePrediction(prediction: ReplicateGetPredictionResponse) {
   const handlers = predictionHandlers.filter(
     (h) => h.version === prediction.version
   );
@@ -73,6 +44,9 @@ async function handlePrediction(prediction: ReplicateGetPredictionRequest) {
   }
 }
 
+/**
+ * Updates the pato without background image url
+ */
 const PatoWithoutBackgroundHandler: PredictionHandler = {
   version: "e809cddc666ccfd38a044f795cf65baab62eedc4273d096bf05935b9a3059b59",
   async handle(prediction) {
