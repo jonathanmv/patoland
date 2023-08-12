@@ -1,8 +1,9 @@
+import { type PatosWithoutUser } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
-type Pato = { imageUrl: string; id: string; love: number };
+type Pato = PatosWithoutUser;
 type Props = {
   pato: Pato;
   onLove?: (pato: Pato) => void;
@@ -106,7 +107,7 @@ export default function PatoComponent({ pato, onLove }: Props) {
           width={480}
           height={720}
           className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
-          src={pato.imageUrl}
+          src={pato.imageNoBgUrl || pato.imageUrl}
           alt="pato"
         />
         <Heart number={currentLove} animated={loveBuffer > 0} />
