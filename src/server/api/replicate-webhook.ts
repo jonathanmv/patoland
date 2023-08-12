@@ -11,6 +11,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  if (req.method !== "POST") {
+    res.status(405).end();
+    return;
+  }
+
   const prediction: unknown = req.body;
   if (!isValidReplicateGetPredictionResponse(prediction)) {
     console.error("Invalid prediction request", prediction);
@@ -18,7 +23,9 @@ export default async function handler(
     return;
   }
 
+  console.log("Received prediction", prediction);
   await handlePrediction(prediction);
+  console.log("Processed prediction", prediction);
 
   res.status(200).end();
 }
