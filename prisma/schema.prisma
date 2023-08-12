@@ -68,10 +68,25 @@ model VerificationToken {
 }
 
 model PatosWithoutUser {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    name      String
-    imageUrl  String
-    love      Int      @default(0)
+    id             String           @id @default(cuid())
+    createdAt      DateTime         @default(now())
+    updatedAt      DateTime         @updatedAt
+    name           String
+    imageUrl       String           @db.Text
+    imageNoBgUrl   String?          @db.Text
+    love           Int              @default(0)
+    PatoPrediction PatoPrediction[]
+}
+
+model PatoPrediction {
+    id           String           @id
+    patoId       String
+    pato         PatosWithoutUser @relation(fields: [patoId], references: [id])
+    version      String
+    output       String?          @db.Text
+    error        String?
+    status       String
+    created_at   String
+    started_at   String?
+    completed_at String?
 }
