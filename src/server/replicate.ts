@@ -33,7 +33,7 @@ export const getPredictionRequestSchema = z.object({
   error: z.null().or(z.string()).optional(),
   logs: z.null().or(z.string()).optional(),
   source: z.null().or(z.string()).optional(),
-  output: z.string().or(z.array(z.string())),
+  output: z.null().or(z.string()).or(z.array(z.string())),
   metrics: z.object({
     predict_time: z.number(),
   }),

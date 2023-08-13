@@ -62,6 +62,11 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
       return;
     }
 
+    if (prediction.output === null) {
+      console.error("Prediction output is null", prediction);
+      throw new Error("Prediction output is null");
+    }
+
     const patoPrediction = await prisma.patoPrediction.findUnique({
       where: { id: prediction.id },
     });
