@@ -10,8 +10,8 @@ export const createPredictionSchema = z.object({
   created_at: z.string(),
   status: z.string(),
   input: z.any(),
-  error: z.string().optional(),
-  logs: z.string(),
+  error: z.null().or(z.string()).optional(),
+  logs: z.null().or(z.string()).optional(),
 });
 
 export type ReplicateCreatePredictionResponse = z.infer<
@@ -30,9 +30,9 @@ export const getPredictionRequestSchema = z.object({
   input: z.any(),
   started_at: z.string(),
   completed_at: z.string(),
-  error: z.string().optional(),
-  logs: z.string(),
-  source: z.string(),
+  error: z.null().or(z.string()).optional(),
+  logs: z.null().or(z.string()).optional(),
+  source: z.null().or(z.string()).optional(),
   output: z.string().or(z.array(z.string())),
   metrics: z.object({
     predict_time: z.number(),
@@ -46,7 +46,11 @@ export type ReplicateGetPredictionResponse = z.infer<
 export function isValidReplicateGetPredictionResponse(
   input: unknown
 ): input is ReplicateGetPredictionResponse {
-  return getPredictionRequestSchema.safeParse(input).success;
+  const result = getPredictionRequestSchema.safeParse(input);
+  if (!result.success) {
+    console.log(result.error.errors);
+  }
+  return result.success;
 }
 
 /**
