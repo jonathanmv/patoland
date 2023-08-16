@@ -1,6 +1,9 @@
+import { PatosWithoutUser } from "@prisma/client";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { prisma } from "~/server/db";
+import { removeImageBackground } from "~/server/replicate";
 
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 6);
 export const patosRouter = createTRPCRouter({
@@ -18,14 +21,18 @@ export const patosRouter = createTRPCRouter({
 
   add: publicProcedure
     .input(z.object({ name: z.string(), imageUrl: z.string() }))
-    .mutation(({ ctx, input }) => {
-      return ctx.prisma.patosWithoutUser.create({
+    .mutation(async ({ ctx, input }) => {
+      const pato = await ctx.prisma.patosWithoutUser.create({
         data: {
           id: nanoid(),
           name: input.name,
           imageUrl: input.imageUrl,
         },
       });
+
+      await requestBackgroundRemoval(pato);
+
+      return pato;
     }),
 
   addLove: publicProcedure
@@ -39,3 +46,21 @@ export const patosRouter = createTRPCRouter({
       });
     }),
 });
+
+async function requestBackgroundRemoval(pato: PatosWithoutUser) {
+  try {
+    const prediction = await removeImageBackground(pato.imageUrl);
+    await prisma.patoPrediction.create({
+      data: {
+        id: prediction.id,
+        version: prediction.version,
+        status: prediction.status,
+        created_at: prediction.created_at,
+        error: prediction.error,
+        patoId: pato.id,
+      },
+    });
+  } catch (e) {
+    console.error("Error removing background", e);
+  }
+}

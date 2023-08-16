@@ -7,7 +7,9 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "db": "pscale connect patoland dev --port 3309",
+    "tunnel": "npx ngrok http 3000"
   },
   "dependencies": {
     "@lottiefiles/react-lottie-player": "^3.5.3",
