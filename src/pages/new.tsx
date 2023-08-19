@@ -221,7 +221,7 @@ const Uploading = () => (
 );
 
 const RemovingBackground = () => {
-  const [counter, setCounter] = useState(4);
+  const [counter, setCounter] = useState(3);
   useEffect(() => {
     if (counter <= 0) return;
     const timer = setTimeout(() => setCounter(counter - 1), 1000);
@@ -231,7 +231,7 @@ const RemovingBackground = () => {
   return (
     <>
       <button className="rounded-xl border-0 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300">
-        <span className="text-3xl">{counter}</span>
+        <span className="text-2xl">{counter}</span>
       </button>
     </>
   );

@@ -1,18 +1,34 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import PatoComponent from "~/components/pato";
+import PatoLoading from "~/components/patoloading";
 import { api } from "~/utils/api";
 
 export default function Pato() {
   const id = useRouter().query.id as string;
 
-  const { data: pato } = api.patos.findById.useQuery(id, {
+  const { data: pato, refetch } = api.patos.findById.useQuery(id, {
     enabled: !!id,
   });
 
+  useEffect(
+    function reloadUntilImageWithNoBgIsSet() {
+      if (!pato) return;
+      if (pato.imageNoBgUrl) return;
+
+      const interval = setInterval(() => {
+        void refetch();
+      }, 1000);
+
+      return () => clearInterval(interval);
+    },
+    [pato, refetch]
+  );
+
   if (!pato) {
-    return null;
+    return <PatoLoading />;
   }
 
   return (

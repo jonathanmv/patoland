@@ -1,5 +1,5 @@
-import { Player } from "@lottiefiles/react-lottie-player";
 import PatoComponent from "~/components/pato";
+import PatoLoading from "~/components/patoloading";
 import { api } from "~/utils/api";
 
 export default function Home() {
@@ -12,15 +12,7 @@ export default function Home() {
           <PatoComponent key={pato.id} pato={pato} />
         ))}
       </div>
-
-      <div className="container mx-auto mt-12 max-w-xs">
-        <Player
-          autoplay
-          loop
-          src="/pato-lottie.json"
-          style={{ height: "300px", width: "300px" }}
-        />
-      </div>
+      <PatoLoading />
     </>
   );
 }

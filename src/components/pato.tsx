@@ -106,7 +106,10 @@ export default function PatoComponent({ pato, onLove }: Props) {
         <Image
           width={480}
           height={720}
-          className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
+          className={
+            (pato.imageNoBgUrl ? "" : "animate-pulse ") +
+            "absolute h-full w-full rounded-lg bg-yellow-500 object-cover"
+          }
           src={pato.imageNoBgUrl || pato.imageUrl}
           alt="pato"
         />
