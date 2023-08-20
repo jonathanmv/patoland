@@ -1,5 +1,5 @@
 import PatoComponent from "~/components/pato";
-import PatoLoading from "~/components/patoloading";
+import PatoLoading from "~/components/pato-loading";
 import { api } from "~/utils/api";
 
 export default function Home() {

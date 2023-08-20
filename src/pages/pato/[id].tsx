@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import PatoComponent from "~/components/pato";
-import PatoLoading from "~/components/patoloading";
+import PatoLoading from "~/components/pato-loading";
 import { api } from "~/utils/api";
 
 export default function Pato() {
