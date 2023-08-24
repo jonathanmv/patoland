@@ -1,3 +1,5 @@
+import { File } from "@web-std/file";
+import Jimp from "jimp";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { utapi } from "uploadthing/server";
 import { z } from "zod";
@@ -44,11 +46,16 @@ async function handlePrediction(prediction: ReplicateGetPredictionResponse) {
     return;
   }
 
-  try {
-    await Promise.allSettled(handlers.map((h) => h.handle(prediction)));
-  } catch (e) {
-    console.error("Error handling prediction", prediction, e);
-  }
+  await Promise.allSettled(
+    handlers.map(async (h) => {
+      try {
+        await h.handle(prediction);
+      } catch (e) {
+        console.error("Error handling prediction", prediction, e);
+        throw e;
+      }
+    })
+  );
 }
 
 /**
@@ -58,7 +65,7 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
   version: "e809cddc666ccfd38a044f795cf65baab62eedc4273d096bf05935b9a3059b59",
   async handle(prediction) {
     if (prediction.status !== "succeeded") {
-      console.log("Prediction not succeeded. Ignoring", prediction);
+      console.log("Prediction didn't succeed. Ignoring", prediction);
       return;
     }
 
@@ -75,29 +82,26 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
       throw new Error("Pato prediction not found by id: " + prediction.id);
     }
 
-    patoPrediction;
     if (patoPrediction.status === "succeeded") {
       console.log("prediction already handled", prediction);
       return;
     }
 
-    const imageWithoutBackground = z
+    const imageWithoutBackgroundUrl = z
       .string()
       .parse(prediction.output || prediction.output[0]);
-    const result = await utapi.uploadFilesFromUrl(imageWithoutBackground);
-    if (result.error !== null) {
-      console.error("Error uploading image without background", {
-        prediction,
-        result,
-      });
-      throw new Error("Error uploading image without background");
-    }
+
+    console.log("Downloading and processing image", imageWithoutBackgroundUrl);
+    const buffer = await downloadAndProcessImage(imageWithoutBackgroundUrl);
+    console.log("Uploading processed image", imageWithoutBackgroundUrl);
+    const url = await uploadImage(buffer);
+    console.log("Processed image uploaded", imageWithoutBackgroundUrl, url);
 
     await prisma.$transaction([
       prisma.patosWithoutUser.update({
         where: { id: patoPrediction.patoId },
         data: {
-          imageNoBgUrl: result.data.url,
+          imageNoBgUrl: url,
         },
       }),
       prisma.patoPrediction.update({
@@ -106,7 +110,7 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
           status: prediction.status,
           started_at: prediction.started_at,
           completed_at: prediction.completed_at,
-          output: imageWithoutBackground,
+          output: imageWithoutBackgroundUrl,
         },
       }),
     ]);
@@ -116,3 +120,34 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
 };
 
 const predictionHandlers = [PatoWithoutBackgroundHandler];
+
+async function downloadAndProcessImage(imageUrl: string) {
+  const image = await Jimp.read(imageUrl);
+  const croppedImage = image
+    .autocrop({
+      cropOnlyFrames: false,
+      leaveBorder: 4,
+      tolerance: 0.5,
+    })
+    .contrast(0.1);
+  return await croppedImage.getBufferAsync(Jimp.MIME_PNG);
+}
+
+async function uploadImage(buffer: Buffer) {
+  const result = (
+    await utapi.uploadFiles([
+      new File([buffer], "cropped-pato.png", {
+        type: "image/png",
+      }),
+    ])
+  )[0];
+
+  if (!result || result.error !== null) {
+    console.error("Error uploading image without background", {
+      result,
+    });
+    throw new Error("Error uploading image without background");
+  }
+
+  return result.data.url;
+}
