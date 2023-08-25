@@ -2,7 +2,13 @@
 import type { PatosWithoutUser } from "@prisma/client";
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  SyntheticEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Webcam from "react-webcam";
 import { api } from "~/utils/api";
 import { useUploadThing } from "~/utils/uploadthing";
@@ -72,6 +78,10 @@ type WebcamProps = {
 };
 function WebcamComponent({ onCapture }: WebcamProps) {
   const webcamRef = useRef<Webcam>(null);
+  const [error, setError] = useState<SyntheticEvent<
+    HTMLVideoElement,
+    Event
+  > | null>(null);
   const capture = useCallback(() => {
     const imageSrc = webcamRef.current?.getScreenshot();
     if (!imageSrc) {
@@ -83,21 +93,33 @@ function WebcamComponent({ onCapture }: WebcamProps) {
   return (
     <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
       <div className="relative mb-6 aspect-[2/3] rounded-xl border-4 border-yellow-500">
-        <Webcam
-          imageSmoothing
-          ref={webcamRef}
-          screenshotFormat="image/jpeg"
-          audio={false}
-          videoConstraints={{
-            height: { min: 720, ideal: 720, max: 720 },
-            width: { min: 480, ideal: 480, max: 480 },
-            facingMode: "environment",
-          }}
-          forceScreenshotSourceSize
-          width={480}
-          height={720}
-          className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
-        />
+        {error ? (
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
+            <p className="text-xl font-bold text-red-500">Error</p>
+            <p className="text-xl font-bold text-red-500">
+              {error?.type || "Unknown error"}
+            </p>
+            <pre>{JSON.stringify(error, null, 2)}</pre>
+          </div>
+        ) : null}
+        {error ? null : (
+          <Webcam
+            imageSmoothing
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            audio={false}
+            videoConstraints={{
+              height: { min: 720, ideal: 720, max: 720 },
+              width: { min: 480, ideal: 480, max: 480 },
+              facingMode: "environment",
+            }}
+            forceScreenshotSourceSize
+            width={480}
+            height={720}
+            className="absolute h-full w-full rounded-lg bg-zinc-200 object-cover"
+            onError={setError}
+          />
+        )}
       </div>
       <div className="flex flex-row justify-center gap-4">
         <button
