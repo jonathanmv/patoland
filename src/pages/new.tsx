@@ -3,11 +3,11 @@ import type { PatosWithoutUser } from "@prisma/client";
 import "@uploadthing/react/styles.css";
 import { useRouter } from "next/router";
 import React, {
-  SyntheticEvent,
   useCallback,
   useEffect,
   useRef,
   useState,
+  type SyntheticEvent,
 } from "react";
 import Webcam from "react-webcam";
 import { api } from "~/utils/api";
