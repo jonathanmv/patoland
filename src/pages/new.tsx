@@ -109,8 +109,8 @@ function WebcamComponent({ onCapture }: WebcamProps) {
             screenshotFormat="image/jpeg"
             audio={false}
             videoConstraints={{
-              height: { min: 720, ideal: 720, max: 720 },
-              width: { min: 480, ideal: 480, max: 480 },
+              height: { min: 720, ideal: 1080, max: 1440 },
+              width: { min: 480, ideal: 720, max: 960 },
               facingMode: "environment",
             }}
             forceScreenshotSourceSize
