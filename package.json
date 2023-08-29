@@ -23,6 +23,7 @@
     "@trpc/server": "^10.26.0",
     "@uploadthing/react": "^5.2.0",
     "@web-std/file": "^3.0.2",
+    "argon2": "^0.31.0",
     "jimp": "^0.22.10",
     "nanoid": "^4.0.2",
     "next": "^13.4.2",

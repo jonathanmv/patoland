@@ -24,6 +24,7 @@ export const env = createEnv({
     UPLOADTHING_SECRET: z.string(),
     UPLOADTHING_APP_ID: z.string(),
     REPLICATEAI_API_KEY: z.string(),
+    PASSWORD_HASH_SECRET: z.string(),
   },
 
   /**
@@ -47,6 +48,7 @@ export const env = createEnv({
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     REPLICATEAI_API_KEY: process.env.REPLICATEAI_API_KEY,
+    PASSWORD_HASH_SECRET: process.env.PASSWORD_HASH_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
