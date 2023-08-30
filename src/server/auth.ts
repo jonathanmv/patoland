@@ -7,6 +7,7 @@ import {
   type NextAuthOptions,
 } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
 
 /**
@@ -19,6 +20,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      username: string;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -70,7 +72,10 @@ export const authOptions: NextAuthOptions = {
 
         const isValid = await argon2.verify(
           user.password,
-          credentials.password
+          credentials.password,
+          {
+            secret: Buffer.from(env.PASSWORD_HASH_SECRET),
+          }
         );
         if (!isValid) return null;
 
