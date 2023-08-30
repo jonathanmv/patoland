@@ -20,16 +20,17 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      username: string;
+      username?: string | null;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
   }
 
-  // interface User {
-  //   // ...other properties
-  //   // role: UserRole;
-  // }
+  interface User {
+    username?: string | null;
+    //   // ...other properties
+    //   // role: UserRole;
+  }
 }
 
 /**
@@ -38,14 +39,26 @@ declare module "next-auth" {
  * @see https://next-auth.js.org/configuration/options
  */
 export const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
+
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: ({ session, token }) => {
+      if (session.user && token.sub) {
+        session.user.id = token.sub;
+        session.user.username = token.name;
+      }
+      return session;
+    },
+    jwt: ({ token, user }) => {
+      if (user) {
+        token.sub = user.id;
+        // This is weird. Try to add a username property to the token instead
+        token.name = user.name || user.username;
+      }
+      return token;
+    },
   },
   adapter: PrismaAdapter(prisma),
   providers: [
