@@ -1,6 +1,9 @@
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 export default function TopBar() {
+  const { data: session } = useSession();
+  const link = session?.user ? "/new" : "/auth/signin";
   return (
     <header className="sticky top-0 z-50 w-full px-4 py-2">
       <div className="flex flex-row items-center justify-between">
@@ -9,7 +12,7 @@ export default function TopBar() {
             patoland
           </h1>
         </Link>
-        <Link href="/new" className="relative">
+        <Link href={link} className="relative">
           <span className="absolute h-full w-full rounded-xl border-b-4 border-violet-600 bg-violet-500 px-8 py-3  text-center font-bold text-white opacity-75 hover:border-violet-500 hover:bg-violet-400 focus:border-violet-500 focus:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-300 active:border-0" />
           <button className="animate-pulse rounded-xl border-b-4 border-violet-600 bg-violet-500 px-8 py-3  text-center font-bold text-white hover:border-violet-500 hover:bg-violet-400 focus:border-violet-500 focus:bg-violet-400 focus:outline-none focus:ring-4 focus:ring-violet-300 active:border-0">
             <svg

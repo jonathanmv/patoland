@@ -15,8 +15,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <Head>
         <title>Patoland</title>
       </Head>
-      <TopBar />
       <SessionProvider session={session}>
+        <TopBar />
         <Component {...pageProps} />
       </SessionProvider>
     </>
