@@ -31,7 +31,7 @@ const Heart = ({ number, animated }: { animated?: boolean; number: number }) =>
           d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
         />
       </svg>
-      <span className="absolute text-4xl font-bold text-white">{number}</span>
+      <span className="absolute text-6xl font-bold text-white">{number}</span>
     </div>
   ) : null;
 
@@ -118,7 +118,7 @@ export default function PatoComponent({ pato, onLove }: Props) {
       <div className="flex flex-row justify-center gap-4">
         <button
           onClick={handleLove}
-          className="flex w-full transform flex-row  rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0 active:border-t-4"
+          className="flex w-full transform select-none flex-row items-center rounded-xl border-b-4 border-red-600 bg-red-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-red-500 hover:bg-red-400 focus:border-red-500 focus:bg-red-400 focus:outline-none focus:ring-4 focus:ring-red-300 active:border-0 active:border-t-4"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -134,12 +134,12 @@ export default function PatoComponent({ pato, onLove }: Props) {
               d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
             />
           </svg>
-          {currentLove}
+          <span className="font-sans text-xl font-bold">{currentLove}</span>
         </button>
 
         <button
           onClick={handleShare}
-          className="w-full rounded-xl border-b-4 border-green-600 bg-green-500  px-8 py-3 font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
+          className="w-full select-none rounded-xl border-b-4 border-green-600 bg-green-500  px-8 py-3 font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
