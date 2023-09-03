@@ -1,17 +1,18 @@
-import type {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
-import { getCsrfToken } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 
-export default function SignIn({
-  csrfToken,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function SignIn() {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const username = (formData.get("username") as string).toLocaleLowerCase();
+    const password = formData.get("password") as string;
+    void signIn("credentials", { username, password, callbackUrl: "/" });
+  };
+
   return (
-    <form method="post" action="/api/auth/callback/credentials">
+    <form onSubmit={handleSubmit}>
       <figure className="font-patoland container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
-        <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
         <label
           htmlFor="username"
           className="mb-4 block text-2xl font-bold text-yellow-950"
@@ -52,12 +53,4 @@ export default function SignIn({
       </div>
     </form>
   );
-}
-
-export async function getServerSideProps(context: GetServerSidePropsContext) {
-  return {
-    props: {
-      csrfToken: await getCsrfToken(context),
-    },
-  };
 }

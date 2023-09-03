@@ -1,16 +1,22 @@
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function HeaderBar() {
   const user = useSession()?.data?.user;
+  const router = useRouter();
 
   const handleClick = () => {
     const out = confirm("¿Quieres salir?");
     if (out) {
-      void signOut();
+      void signOut({ callbackUrl: "/" });
     }
   };
 
   if (!user) {
+    return null;
+  }
+
+  if (router.pathname !== "/") {
     return null;
   }
 
