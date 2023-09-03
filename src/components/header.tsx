@@ -7,7 +7,7 @@ export default function TopBar() {
   return (
     <header className="sticky top-0 z-50 w-full px-4 py-2">
       <div className="flex flex-row items-center justify-between">
-        <Link href="/api/auth/signin">
+        <Link href="/">
           <h1 className="font-patoland text-[4rem] font-extrabold text-slate-700">
             patoland
           </h1>

@@ -14,8 +14,18 @@ export const authRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const username = input.username.trim().toLocaleLowerCase();
+      const regex = /^[a-zA-Z0-9_]{4,20}$/g;
+      if (!regex.test(username)) {
+        return {
+          success: false,
+          message: "Username must be between 4 and 20 characters",
+          user: null,
+        };
+      }
+
       const existingUser = await ctx.prisma.user.findUnique({
-        where: { username: input.username },
+        where: { username },
       });
 
       if (existingUser) {
@@ -29,7 +39,7 @@ export const authRouter = createTRPCRouter({
       const user = await ctx.prisma.user.create({
         data: {
           id: nanoid(),
-          username: input.username,
+          username,
           password: hashedPassword,
         },
       });

@@ -43,10 +43,10 @@ export default function SignIn({
           entrar
         </button>
       </figure>
-      <div className="container mx-auto mt-12 max-w-xs">
-        <Link href="/auth/sigup">
+      <div className="container mx-auto mt-8 max-w-xs py-4">
+        <Link href="/auth/signup">
           <button className="flex w-full transform flex-row items-center justify-center gap-4 rounded-xl border-b-4 border-blue-600 bg-blue-500 px-8 py-3  text-center font-bold text-white transition-transform hover:border-blue-500 hover:bg-blue-400 focus:border-blue-500 focus:bg-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-300 active:border-0 active:border-t-4">
-            <span className="font-patoland text-3xl">abrir nueva cuenta</span>
+            <span className="font-patoland text-3xl">abrir cuenta nueva</span>
           </button>
         </Link>
       </div>
