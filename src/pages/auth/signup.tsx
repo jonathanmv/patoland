@@ -1,3 +1,4 @@
+import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -10,7 +11,12 @@ type Credentials = {
 
 export default function SignUp() {
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
+  const [credentials, setCredentials] = useState<Credentials>({
+    username: "",
+    password: "",
+  });
   const router = useRouter();
+
   const signUp = api.auth.signUp.useMutation({
     onSettled: () => {
       setIsSigningUp(false);
@@ -18,25 +24,28 @@ export default function SignUp() {
     onError: (error) => {
       alert(error.message);
     },
-    onSuccess: () => {
-      alert("Cuenta creada exitosamente");
-      void router.push("/");
+    onSuccess: async () => {
+      await signIn("credentials", { ...credentials, redirect: false });
+      await router.push("/");
     },
   });
   function handleSignUp({ username, password }: Credentials) {
     if (isSigningUp) return;
 
+    setCredentials({ username, password });
     signUp.mutate({ username, password });
     setIsSigningUp(true);
   }
 
-  return <SignUpComponent onSignUp={handleSignUp} />;
+  return <SignUpComponent onSignUp={handleSignUp} isSigningUp={isSigningUp} />;
 }
 
 function SignUpComponent({
   onSignUp,
+  isSigningUp,
 }: {
   onSignUp: (credentials: Credentials) => void;
+  isSigningUp?: boolean;
 }) {
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -107,12 +116,32 @@ function SignUpComponent({
             className="form-input my-2 w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-3xl"
           />
         </label>
-        <button
-          type="submit"
-          className="font-patoland my-4 w-full rounded-xl border-b-4 border-green-600 bg-green-500 px-8  py-3 text-3xl font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
-        >
-          crear cuenta
-        </button>
+        {!isSigningUp && (
+          <button
+            type="submit"
+            className=" font-patoland my-4 w-full rounded-xl border-b-4 border-green-600 bg-green-500 px-8  py-3 text-3xl font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
+          >
+            crear cuenta
+          </button>
+        )}
+        {isSigningUp && (
+          <button className="w-full rounded-xl border-0 border-b-4 border-violet-600 bg-violet-500 px-8 py-4 text-center font-bold text-white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="mx-auto h-6 w-6 animate-spin"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"
+              />
+            </svg>
+          </button>
+        )}
       </figure>
       <div className="container mx-auto mt-8 max-w-xs py-4">
         <Link href="/auth/signin">
