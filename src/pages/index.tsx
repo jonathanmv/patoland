@@ -7,7 +7,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex flex-col gap-12">
+      <div className="my-4 flex flex-col gap-12">
         {patos?.map((pato) => (
           <PatoComponent key={pato.id} pato={pato} />
         ))}
