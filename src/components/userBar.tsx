@@ -5,10 +5,11 @@ export default function HeaderBar() {
   const user = useSession()?.data?.user;
   const router = useRouter();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     const out = confirm("¿Quieres salir?");
     if (out) {
-      void signOut({ callbackUrl: "/" });
+      await signOut({ redirect: false });
+      await router.push("/");
     }
   };
 
@@ -24,7 +25,7 @@ export default function HeaderBar() {
     <div className="flex w-full flex-row items-center justify-between px-4">
       <button
         className="font-patoland text-[2rem] font-bold text-slate-700"
-        onClick={handleClick}
+        onClick={() => void handleClick()}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

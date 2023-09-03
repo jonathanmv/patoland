@@ -54,7 +54,7 @@ function SignUpComponent({
 
   return (
     <form onSubmit={onSubmit}>
-      <figure className="font-patoland container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
+      <figure className="container mx-auto my-2 max-w-xs rounded-xl border-4 border-b-8 border-yellow-500 bg-yellow-300 p-6">
         <label
           htmlFor="username"
           className="mb-4 block text-3xl font-bold text-yellow-900"
@@ -64,9 +64,10 @@ function SignUpComponent({
             id="username"
             name="username"
             type="text"
+            autoCapitalize="none"
             minLength={4}
             maxLength={20}
-            className="form-input w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-4xl"
+            className="form-input my-2 w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-3xl lowercase"
             required
             pattern="^[a-zA-Z0-9_]{4,20}$"
           />
@@ -75,7 +76,7 @@ function SignUpComponent({
           htmlFor="password"
           className="mb-4 block text-3xl font-bold text-yellow-900"
         >
-          contrase<span className="text-lg">ñ</span>a
+          contraseña
           <input
             id="password"
             name="password"
@@ -84,7 +85,7 @@ function SignUpComponent({
             maxLength={50}
             required
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,50}"
-            className="form-input w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-4xl"
+            className="form-input my-2 w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-3xl"
           />
           <p className="p-2 font-sans text-base font-normal leading-normal">
             Al menos 6 caracteres, una mayúscula, una minúscula y un número
@@ -94,7 +95,7 @@ function SignUpComponent({
           htmlFor="password"
           className="mb-4 block text-3xl font-bold text-yellow-900"
         >
-          repetir contrase<span className="text-lg">ñ</span>a
+          repetir contraseña
           <input
             id="validate-password"
             name="validate-password"
@@ -103,7 +104,7 @@ function SignUpComponent({
             maxLength={50}
             required
             pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,50}"
-            className="form-input w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-4xl"
+            className="form-input my-2 w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-3xl"
           />
         </label>
         <button

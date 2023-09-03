@@ -9,8 +9,13 @@ html, body {
     padding: 0;
     @apply bg-yellow-50;
     text-transform: lowercase;
+    font-family: 'Yomogi', sans-serif;
 }
 
 .font-patoland {
     font-family: 'Gaegu', sans-serif;
+}
+
+.font-website {
+    font-family: 'Yomogi', sans-serif;
 }
