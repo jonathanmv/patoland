@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["jsonProtocol"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
@@ -14,12 +13,6 @@ datasource db {
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url          = env("DATABASE_URL")
     relationMode = "prisma"
-}
-
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
@@ -59,6 +52,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    patos         Pato[]
 }
 
 model VerificationToken {
@@ -70,6 +64,16 @@ model VerificationToken {
 }
 
 model PatosWithoutUser {
+    id           String   @id @default(cuid())
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    name         String
+    imageUrl     String   @db.Text
+    imageNoBgUrl String?  @db.Text
+    love         Int      @default(0)
+}
+
+model Pato {
     id             String           @id @default(cuid())
     createdAt      DateTime         @default(now())
     updatedAt      DateTime         @updatedAt
@@ -77,18 +81,24 @@ model PatosWithoutUser {
     imageUrl       String           @db.Text
     imageNoBgUrl   String?          @db.Text
     love           Int              @default(0)
+    userId         String
+    user           User             @relation(fields: [userId], references: [id])
     PatoPrediction PatoPrediction[]
+
+    @@index([userId])
 }
 
 model PatoPrediction {
-    id           String           @id
+    id           String  @id
     patoId       String
-    pato         PatosWithoutUser @relation(fields: [patoId], references: [id])
+    pato         Pato    @relation(fields: [patoId], references: [id])
     version      String
-    output       String?          @db.Text
+    output       String? @db.Text
     error        String?
     status       String
     created_at   String
     started_at   String?
     completed_at String?
+
+    @@index([patoId])
 }
