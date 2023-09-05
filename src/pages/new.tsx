@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import type { PatosWithoutUser } from "@prisma/client";
+import type { Pato } from "@prisma/client";
 import "@uploadthing/react/styles.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -17,7 +17,7 @@ import { useUploadThing } from "~/utils/uploadthing";
 export default function NewPato() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [uploaded, setUploaded] = useState(false);
-  const [pato, setPato] = useState<PatosWithoutUser | null>(null);
+  const [pato, setPato] = useState<Pato | null>(null);
   const router = useRouter();
 
   const { data: session } = useSession();

@@ -1,4 +1,4 @@
-import { type PatosWithoutUser } from "@prisma/client";
+import { type Pato } from "@prisma/client";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
 import {
@@ -12,7 +12,7 @@ import { removeImageBackground } from "~/server/replicate";
 const nanoid = customAlphabet("abcdefghijklmnopqrstuvwxyz", 6);
 export const patosRouter = createTRPCRouter({
   findById: publicProcedure.input(z.string()).query(({ ctx, input }) => {
-    return ctx.prisma.patosWithoutUser.findUnique({
+    return ctx.prisma.pato.findUnique({
       where: { id: input },
     });
   }),
@@ -26,10 +26,10 @@ export const patosRouter = createTRPCRouter({
   add: protectedProcedure
     .input(z.object({ name: z.string(), imageUrl: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // ctx.session.user.id;
-      const pato = await ctx.prisma.patosWithoutUser.create({
+      const pato = await ctx.prisma.pato.create({
         data: {
           id: nanoid(),
+          userId: ctx.session.user.id,
           name: input.name,
           imageUrl: input.imageUrl,
         },
@@ -43,7 +43,7 @@ export const patosRouter = createTRPCRouter({
   addLove: publicProcedure
     .input(z.object({ id: z.string(), love: z.number() }))
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.patosWithoutUser.update({
+      return ctx.prisma.pato.update({
         where: { id: input.id },
         data: {
           love: { increment: input.love },
@@ -52,7 +52,7 @@ export const patosRouter = createTRPCRouter({
     }),
 });
 
-async function requestBackgroundRemoval(pato: PatosWithoutUser) {
+async function requestBackgroundRemoval(pato: Pato) {
   try {
     const prediction = await removeImageBackground(pato.imageUrl);
     await prisma.patoPrediction.create({

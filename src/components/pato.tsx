@@ -1,9 +1,8 @@
-import { type PatosWithoutUser } from "@prisma/client";
+import { type Pato } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
-type Pato = PatosWithoutUser;
 type Props = {
   pato: Pato;
   onLove?: (pato: Pato) => void;

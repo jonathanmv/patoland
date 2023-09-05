@@ -32,6 +32,7 @@ model Account {
     user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
+    @@index([userId])
 }
 
 model Session {
@@ -40,6 +41,8 @@ model Session {
     userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model User {
@@ -53,6 +56,9 @@ model User {
     accounts      Account[]
     sessions      Session[]
     patos         Pato[]
+
+    @@index([email])
+    @@index([username])
 }
 
 model VerificationToken {
@@ -61,16 +67,6 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
-}
-
-model PatosWithoutUser {
-    id           String   @id @default(cuid())
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    name         String
-    imageUrl     String   @db.Text
-    imageNoBgUrl String?  @db.Text
-    love         Int      @default(0)
 }
 
 model Pato {

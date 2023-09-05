@@ -98,7 +98,7 @@ const PatoWithoutBackgroundHandler: PredictionHandler = {
     console.log("Processed image uploaded", imageWithoutBackgroundUrl, url);
 
     await prisma.$transaction([
-      prisma.patosWithoutUser.update({
+      prisma.pato.update({
         where: { id: patoPrediction.patoId },
         data: {
           imageNoBgUrl: url,
