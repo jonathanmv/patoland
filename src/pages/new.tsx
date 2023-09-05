@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { PatosWithoutUser } from "@prisma/client";
 import "@uploadthing/react/styles.css";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, {
   useCallback,
@@ -19,12 +20,18 @@ export default function NewPato() {
   const [pato, setPato] = useState<PatosWithoutUser | null>(null);
   const router = useRouter();
 
+  const { data: session } = useSession();
+
   const savePato = api.patos.add.useMutation({
     onSuccess: (pato) => {
       setPato(pato);
       setTimeout(function waitUntilBgIsRemoved() {
         void router.push(`/pato/${pato.id}`);
       }, 3000);
+    },
+    onError: (error) => {
+      console.error(error);
+      alert("Error saving pato!");
     },
   });
 
@@ -53,6 +60,14 @@ export default function NewPato() {
     const file = new File([blob], "pato.jpeg", { type: "image/jpeg" });
     await startUpload([file]);
   }, [imageSrc, isUploading, startUpload]);
+
+  useEffect(() => {
+    if (!session) {
+      void router.push("/auth/signin");
+    }
+  }, [router, session]);
+
+  if (!session) return null;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12">

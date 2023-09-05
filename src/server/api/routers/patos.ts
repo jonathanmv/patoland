@@ -1,7 +1,11 @@
 import { type PatosWithoutUser } from "@prisma/client";
 import { customAlphabet } from "nanoid";
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { removeImageBackground } from "~/server/replicate";
 
@@ -19,9 +23,10 @@ export const patosRouter = createTRPCRouter({
     });
   }),
 
-  add: publicProcedure
+  add: protectedProcedure
     .input(z.object({ name: z.string(), imageUrl: z.string() }))
     .mutation(async ({ ctx, input }) => {
+      // ctx.session.user.id;
       const pato = await ctx.prisma.patosWithoutUser.create({
         data: {
           id: nanoid(),
