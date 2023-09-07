@@ -1,31 +1,29 @@
 /* eslint-disable @next/next/no-img-element */
-import type { Pato } from "@prisma/client";
+import type { Item } from "@prisma/client";
 import "@uploadthing/react/styles.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { WebcamComponent } from "~/components/webcamComponent";
 import { api } from "~/utils/api";
 import { useUploadThing } from "~/utils/uploadthing";
 
 export default function NewPato() {
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
-  const [uploaded, setUploaded] = useState(false);
-  const [pato, setPato] = useState<Pato | null>(null);
+  const [item, setItem] = useState<Item | null>(null);
   const router = useRouter();
 
   const { data: session } = useSession();
 
-  const savePato = api.patos.add.useMutation({
-    onSuccess: (pato) => {
-      setPato(pato);
-      setTimeout(function waitUntilBgIsRemoved() {
-        void router.push(`/pato/${pato.id}`);
-      }, 3000);
+  const saveItem = api.item.add.useMutation({
+    onSuccess: (item) => {
+      alert("Item saved!");
+      setItem(item);
     },
     onError: (error) => {
       console.error(error);
-      alert("Error saving pato!");
+      alert("Error saving item!");
     },
   });
 
@@ -33,9 +31,10 @@ export default function NewPato() {
     onClientUploadComplete: (file) => {
       if (!file || !file[0]) return;
 
-      setUploaded(true);
-      savePato.mutate({
-        name: "Pato",
+      setUploadedImageUrl(file[0].fileUrl);
+      saveItem.mutate({
+        name: "Item",
+        description: "Item description",
         imageUrl: file[0].fileUrl,
       });
     },
@@ -51,33 +50,42 @@ export default function NewPato() {
     if (isUploading) return;
 
     const blob = await fetch(imageSrc).then((res) => res.blob());
-    const file = new File([blob], "pato.jpeg", { type: "image/jpeg" });
+    const file = new File([blob], "item.jpeg", { type: "image/jpeg" });
     await startUpload([file]);
   }, [imageSrc, isUploading, startUpload]);
 
-  useEffect(() => {
-    if (!session) {
-      void router.push("/auth/signin");
-    }
-  }, [router, session]);
-
-  if (!session) return null;
+  if (!session?.user) return null;
 
   return (
     <div className="flex flex-col items-center justify-center gap-12">
-      {imageSrc || pato ? null : <WebcamComponent onCapture={setImageSrc} />}
+      {imageSrc || item ? null : <WebcamComponent onCapture={setImageSrc} />}
       {imageSrc ? (
-        <PatoImage imageSrc={pato?.imageNoBgUrl || pato?.imageUrl || imageSrc}>
-          {!pato && !isUploading && !uploaded ? (
+        <PatoImage imageSrc={item?.imageUrl || imageSrc}>
+          {!item && !isUploading && !uploadedImageUrl ? (
             <Choose
               onConfirm={() => void onConfirm()}
               onReset={() => setImageSrc(null)}
             />
           ) : null}
           {isUploading ? <Uploading /> : null}
-          {uploaded || pato ? <RemovingBackground /> : null}
+          {uploadedImageUrl && !item ? <Uploading /> : null}
+          {item ? <Item item={item} /> : null}
         </PatoImage>
       ) : null}
+    </div>
+  );
+}
+
+type ItemProps = {
+  item: Item;
+};
+
+function Item({ item }: ItemProps) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-4">
+      <p className="rounded-lg border-4 border-blue-400 bg-blue-500 px-4 py-2 text-xl font-bold text-white">
+        Item saved!
+      </p>
     </div>
   );
 }
@@ -172,20 +180,3 @@ const Uploading = () => (
     </button>
   </>
 );
-
-const RemovingBackground = () => {
-  const [counter, setCounter] = useState(3);
-  useEffect(() => {
-    if (counter <= 0) return;
-    const timer = setTimeout(() => setCounter(counter - 1), 1000);
-    return () => clearTimeout(timer);
-  });
-
-  return (
-    <>
-      <button className="rounded-xl border-0 border-violet-600 bg-violet-500 px-8 py-3 text-center font-bold text-white outline-none ring-4 ring-violet-300">
-        <span className="text-2xl">{counter}</span>
-      </button>
-    </>
-  );
-};
