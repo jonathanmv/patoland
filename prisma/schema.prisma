@@ -111,6 +111,7 @@ model ItemCollection {
     items       Item[]   @relation("ItemCollectionItem")
     user        User     @relation(fields: [userId], references: [id])
     userId      String
+    username    String
 
     @@index([userId])
 }
@@ -123,6 +124,7 @@ model Item {
     description String?
     imageUrl    String           @db.Text
     userId      String
+    username    String
     user        User             @relation(fields: [userId], references: [id])
     collections ItemCollection[] @relation("ItemCollectionItem")
 

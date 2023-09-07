@@ -73,7 +73,7 @@ export default function NewItem() {
           {isUploading ? <Uploading /> : null}
           {uploadedImageUrl && !item ? <Uploading /> : null}
           {item ? (
-            <UpdateItem item={item} onItemSaved={handleItemSaved} />
+            <UpdateItem item={item} onItemUpdated={handleItemSaved} />
           ) : null}
         </PatoImage>
       ) : null}
@@ -83,12 +83,12 @@ export default function NewItem() {
 
 type UpdateItemProps = {
   item: Item;
-  onItemSaved: (item: Item) => void;
+  onItemUpdated: (item: Item) => void;
 };
 
-function UpdateItem({ item, onItemSaved }: UpdateItemProps) {
-  const saveItem = api.item.add.useMutation({
-    onSuccess: onItemSaved,
+function UpdateItem({ item, onItemUpdated }: UpdateItemProps) {
+  const updateItem = api.item.update.useMutation({
+    onSuccess: onItemUpdated,
     onError: (error) => {
       console.error(error);
       alert("Error saving item!");
@@ -97,14 +97,13 @@ function UpdateItem({ item, onItemSaved }: UpdateItemProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (saveItem.isLoading) return;
+    if (updateItem.isLoading) return;
 
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
-    saveItem.mutate({
+    updateItem.mutate({
       name,
-      description: "Item description",
-      imageUrl: item.imageUrl,
+      id: item.id,
     });
   };
 
@@ -126,7 +125,7 @@ function UpdateItem({ item, onItemSaved }: UpdateItemProps) {
         </label>
         <button
           type="submit"
-          disabled={saveItem.isLoading}
+          disabled={updateItem.isLoading}
           className="font-patoland my-4 w-full rounded-xl border-b-4 border-green-600 bg-green-500 px-8  py-3 text-3xl font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
         >
           guardar

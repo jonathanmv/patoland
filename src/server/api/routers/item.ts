@@ -31,9 +31,11 @@ export const itemRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      const { id, name, username } = ctx.session.user;
       const item = await ctx.prisma.item.create({
         data: {
-          userId: ctx.session.user.id,
+          userId: id,
+          username: username || name || id,
           name: input.name,
           description: input.description,
           imageUrl: input.imageUrl,
@@ -44,7 +46,13 @@ export const itemRouter = createTRPCRouter({
     }),
 
   update: protectedProcedure
-    .input(z.object({ id: z.string(), name: z.string() }))
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        description: z.string().optional(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const item = await ctx.prisma.item.update({
         where: {
