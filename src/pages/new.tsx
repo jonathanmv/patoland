@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import type { Pato } from "@prisma/client";
-import "@uploadthing/react/styles.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useCallback, useEffect, useState } from "react";

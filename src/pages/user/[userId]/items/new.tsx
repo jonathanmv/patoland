@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
 import type { Item } from "@prisma/client";
-import "@uploadthing/react/styles.css";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useCallback, useState } from "react";
@@ -8,7 +7,7 @@ import { WebcamComponent } from "~/components/webcamComponent";
 import { api } from "~/utils/api";
 import { useUploadThing } from "~/utils/uploadthing";
 
-export default function NewPato() {
+export default function NewItem() {
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [item, setItem] = useState<Item | null>(null);
@@ -74,7 +73,7 @@ export default function NewPato() {
           {isUploading ? <Uploading /> : null}
           {uploadedImageUrl && !item ? <Uploading /> : null}
           {item ? (
-            <ItemComponent item={item} onItemSaved={handleItemSaved} />
+            <UpdateItem item={item} onItemSaved={handleItemSaved} />
           ) : null}
         </PatoImage>
       ) : null}
@@ -82,12 +81,12 @@ export default function NewPato() {
   );
 }
 
-type ItemComponentProps = {
+type UpdateItemProps = {
   item: Item;
   onItemSaved: (item: Item) => void;
 };
 
-function ItemComponent({ item, onItemSaved }: ItemComponentProps) {
+function UpdateItem({ item, onItemSaved }: UpdateItemProps) {
   const saveItem = api.item.add.useMutation({
     onSuccess: onItemSaved,
     onError: (error) => {
