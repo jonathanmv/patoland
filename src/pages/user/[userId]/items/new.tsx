@@ -54,6 +54,10 @@ export default function NewPato() {
     await startUpload([file]);
   }, [imageSrc, isUploading, startUpload]);
 
+  const handleItemSaved = (item: Item) => {
+    void router.push(`/user/${item.userId}/items/${item.id}`);
+  };
+
   if (!session?.user) return null;
 
   return (
@@ -69,23 +73,66 @@ export default function NewPato() {
           ) : null}
           {isUploading ? <Uploading /> : null}
           {uploadedImageUrl && !item ? <Uploading /> : null}
-          {item ? <Item item={item} /> : null}
+          {item ? (
+            <ItemComponent item={item} onItemSaved={handleItemSaved} />
+          ) : null}
         </PatoImage>
       ) : null}
     </div>
   );
 }
 
-type ItemProps = {
+type ItemComponentProps = {
   item: Item;
+  onItemSaved: (item: Item) => void;
 };
 
-function Item({ item }: ItemProps) {
+function ItemComponent({ item, onItemSaved }: ItemComponentProps) {
+  const saveItem = api.item.add.useMutation({
+    onSuccess: onItemSaved,
+    onError: (error) => {
+      console.error(error);
+      alert("Error saving item!");
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (saveItem.isLoading) return;
+
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    saveItem.mutate({
+      name,
+      description: "Item description",
+      imageUrl: item.imageUrl,
+    });
+  };
+
   return (
     <div className="flex flex-col items-center justify-center gap-4">
-      <p className="rounded-lg border-4 border-blue-400 bg-blue-500 px-4 py-2 text-xl font-bold text-white">
-        Item saved!
-      </p>
+      <form onSubmit={handleSubmit}>
+        <label
+          htmlFor="name"
+          className="mb-4 block text-2xl font-extrabold text-yellow-950"
+        >
+          ¿cómo se llama esto?
+          <input
+            id="name"
+            name="name"
+            autoCapitalize="none"
+            type="text"
+            className="form-input my-2 w-full rounded-xl border-4 border-yellow-500 bg-yellow-50 px-4 py-3 text-3xl"
+          />
+        </label>
+        <button
+          type="submit"
+          disabled={saveItem.isLoading}
+          className="font-patoland my-4 w-full rounded-xl border-b-4 border-green-600 bg-green-500 px-8  py-3 text-3xl font-bold text-white hover:border-green-500 hover:bg-green-400 focus:border-green-500 focus:bg-green-400 focus:outline-none focus:ring-4 focus:ring-green-300 active:border-0"
+        >
+          guardar
+        </button>
+      </form>
     </div>
   );
 }
