@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { getHostUrl } from "~/utils/getHostUrl";
 
 export const createPredictionSchema = z.object({
   id: z.string(),
@@ -61,14 +62,7 @@ export function isValidReplicateGetPredictionResponse(
  * @see https://github.com/replicate/scribble-diffusion/pull/27/commits/627c872c78aad89cadd02798d37d4696e3278a12
  */
 export async function removeImageBackground(image_url: string) {
-  const { VERCEL_URL, TUNNEL_URL } = process.env;
-  let HOST = "http://localhost:3000";
-  if (TUNNEL_URL) {
-    HOST = `https://${TUNNEL_URL}`;
-  }
-  if (VERCEL_URL) {
-    HOST = `https://${VERCEL_URL}`;
-  }
+  const HOST = getHostUrl();
 
   const payload = {
     version: "e809cddc666ccfd38a044f795cf65baab62eedc4273d096bf05935b9a3059b59",
